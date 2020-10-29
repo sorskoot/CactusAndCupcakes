@@ -1,11 +1,31 @@
 
 var COLORS = ['red', 'green', 'blue'];
 
+AFRAME.registerComponent('collider-check', {
+  dependencies: ['raycaster'],
+
+  init: function () {
+
+    this.el.addEventListener('raycaster-intersection', function (e) {
+      let elm = e.detail.els[0];
+      if (elm.classList.contains('cupcake')) {
+        elm.sceneEl.components.game.scoring();
+        elm.remove();
+      }
+      if (elm.classList.contains('cactus')) {
+        elm.sceneEl.components.game.gameover();
+        elm.remove();
+      }
+    });
+  }
+});
+
 
 AFRAME.registerComponent('hand-touch-listener', {
-	init: function () {
+  init: function () {
     this.lastIndex = -1;
     this.el.addEventListener('raycaster-intersected', evt => {
+      console.log(evt);
       this.raycaster = evt.detail.el;
     });
     this.el.addEventListener('raycaster-intersected-cleared', evt => {
@@ -19,17 +39,16 @@ AFRAME.registerComponent('hand-touch-listener', {
     if (!this.raycaster) { return; }  // Not intersecting.
 
     let intersection = this.raycaster.components.raycaster.getIntersection(this.el);
-    
+
     if (!intersection) {
-      return; 
+      return;
     }
 
-    if(!this.isIntersecting){
-      console.log(intersection.object.el.id);
-      this.lastIndex = (this.lastIndex + 1) % COLORS.length;
-      this.el.setAttribute('material', 'color', COLORS[this.lastIndex]);
+    if (!this.isIntersecting) {
+      console.log(intersection);
+
     }
     this.isIntersecting = true;
-  //  console.log(intersection.point);
+    //  console.log(intersection.point);
   }
 });
