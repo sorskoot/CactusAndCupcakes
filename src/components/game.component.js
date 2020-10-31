@@ -1,9 +1,7 @@
 /** Global AFrame */
 AFRAME.registerComponent('game', {
     schema: {
-        spawntime: {
-            default: 2000
-        },
+        spawntime: { default: 2000 },
         cactusChance: { default: 0.2 },
         enitityLifetime: { default: 1000 },
         state: {
@@ -17,9 +15,10 @@ AFRAME.registerComponent('game', {
         this.targets = Array.from(document.querySelectorAll('.placeholder'));
         this.titlescreen = document.getElementById('titlescreen');
         this.gameoverscreen = document.getElementById('gameoverscreen');
+        this.score=0;
         document.querySelectorAll('[tracked-controls]').forEach(d => {
             d.addEventListener('buttondown', (e) => {
-                if (this.data.state !== 'playing') {
+                if (this.data.state === 'title') {
                     this.data.state = 'playing';
                     this.titlescreen.setAttribute('visible', 'false');
                     this.gameoverscreen.setAttribute('visible', 'false');
@@ -28,8 +27,7 @@ AFRAME.registerComponent('game', {
                     this.updateScore();
                 }
             })
-        })
-        this.score=0;
+        })        
     },
     tick: function (time, timeDelta) {
         if (this.data.state !== 'playing') {
@@ -64,12 +62,10 @@ AFRAME.registerComponent('game', {
     },
     scoring:function(){
         this.score++;
-        this.updateScore();
+        this.updateScore();        
     },
     updateScore:function(){
         document.getElementById('score')
             .setAttribute('text',{value:`score:${this.score}`});
     }
-
-
 });
